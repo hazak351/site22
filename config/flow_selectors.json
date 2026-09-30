@@ -1,0 +1,99 @@
+{
+  "_nota": "Candidatos de seletores do Google Flow, tentados em ordem. NÃO VALIDADOS no Flow real: rode o Flow Doctor e ajuste aqui quando a interface mudar. Formatos: role+name (regex), placeholder, label, text, css. 'state': 'attached' para elementos ocultos (ex.: input de arquivo).",
+  "login_url_markers": ["accounts.google.com", "ServiceLogin", "signin"],
+  "login": [
+    {"role": "button", "name": "(?i)^(sign in|fazer login|entrar|iniciar sessão)$"},
+    {"role": "link", "name": "(?i)^(sign in|fazer login|entrar)$"}
+  ],
+  "new_project": [
+    {"role": "button", "name": "(?i)new project|novo projeto|create with flow|criar com o flow"},
+    {"role": "link", "name": "(?i)new project|novo projeto"},
+    {"text": "(?i)^\\s*(\\+\\s*)?(new project|novo projeto)\\s*$"}
+  ],
+  "prompt": [
+    {"role": "textbox", "name": "(?i)prompt|agent|generate|create|describe|gerar|criar|descreva|what do you want"},
+    {"placeholder": "(?i)prompt|generate|create|describe|gerar|criar|descreva|what do you want"},
+    {"css": "textarea"},
+    {"css": "[contenteditable='true'][role='textbox']"},
+    {"css": "[contenteditable='true']"}
+  ],
+  "file_input": [
+    {"css": "input[type='file']", "state": "attached"}
+  ],
+  "upload_trigger": [
+    {"role": "button", "name": "(?i)upload|add (media|image|ingredient|frame)|adicionar|enviar imagem|ingredient"},
+    {"label": "(?i)upload|add image|adicionar imagem"},
+    {"text": "(?i)^\\s*(upload|enviar)\\s*$"}
+  ],
+  "start_frame_slot": [
+    {"role": "button", "name": "(?i)first frame|start frame|primeiro frame|quadro inicial"},
+    {"label": "(?i)first frame|start frame|primeiro frame"}
+  ],
+  "upload_confirm": [
+    {"role": "button", "name": "(?i)crop and save|save|confirm|done|salvar|confirmar|concluir"}
+  ],
+  "mode_menu": [
+    {"role": "combobox", "name": "(?i)mode|modo|text to video|frames to video|ingredients"},
+    {"role": "button", "name": "(?i)text to video|frames to video|ingredients to video|texto para vídeo|frames para vídeo"}
+  ],
+  "mode_options": {
+    "text": "(?i)text to video|texto para v[ií]deo",
+    "frames": "(?i)frames to video|frames para v[ií]deo|quadros para v[ií]deo",
+    "ingredients": "(?i)ingredients to video|ingredientes para v[ií]deo"
+  },
+  "settings_button": [
+    {"role": "button", "name": "(?i)settings|configura|tune|opções"},
+    {"label": "(?i)settings|configurações"}
+  ],
+  "aspect_control": [
+    {"role": "combobox", "name": "(?i)aspect|propor"},
+    {"role": "button", "name": "(?i)aspect ratio|propor[çc][aã]o|landscape|portrait|paisagem|retrato"}
+  ],
+  "aspect_options": {
+    "16:9": "(?i)16:9|landscape|paisagem|horizontal",
+    "9:16": "(?i)9:16|portrait|retrato|vertical"
+  },
+  "outputs_control": [
+    {"role": "combobox", "name": "(?i)outputs|resultados por|saídas"},
+    {"role": "button", "name": "(?i)outputs per prompt|resultados por comando"}
+  ],
+  "model_control": [
+    {"role": "combobox", "name": "(?i)model|modelo"},
+    {"role": "button", "name": "(?i)^veo|model|modelo"}
+  ],
+  "generate": [
+    {"role": "button", "name": "(?i)^(generate|create|send|submit|gerar|criar|enviar)$"},
+    {"label": "(?i)^(generate|create|send|submit|gerar|criar|enviar)$"},
+    {"css": "button[type='submit']"}
+  ],
+  "results": [
+    {"css": "video", "state": "attached"}
+  ],
+  "download": [
+    {"role": "button", "name": "(?i)download|baixar"},
+    {"role": "menuitem", "name": "(?i)download|baixar"},
+    {"label": "(?i)download|baixar"}
+  ],
+  "download_option": [
+    {"role": "menuitem", "name": "(?i)original|720p"},
+    {"role": "button", "name": "(?i)original|720p"},
+    {"text": "(?i)original size|tamanho original"}
+  ],
+  "progress": [
+    {"role": "progressbar"},
+    {"text": "(?i)^\\s*\\d{1,3}\\s*%\\s*$"},
+    {"text": "(?i)generating|gerando"}
+  ],
+  "error_texts": [
+    "(?i)couldn'?t generate",
+    "(?i)something went wrong",
+    "(?i)generation failed",
+    "(?i)violat",
+    "(?i)not enough credits|insufficient credits|créditos insuficientes",
+    "(?i)não foi possível gerar",
+    "(?i)algo deu errado"
+  ],
+  "no_credit_texts": [
+    "(?i)not enough credits|insufficient credits|créditos insuficientes|out of credits"
+  ]
+}

@@ -1,0 +1,8 @@
+# Somente pacotes com wheels prontos para Windows (Python 3.11 a 3.14) — nada é compilado.
+# uvicorn sem [standard] de propósito: evita uvloop/httptools.
+fastapi>=0.115
+uvicorn>=0.30
+python-multipart>=0.0.9
+pydantic>=2.12
+playwright>=1.55
+pillow>=11.3

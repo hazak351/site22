@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AdFlow Studio Auto</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%23f5b83d'/%3E%3Cpath d='M6 4l6 4-6 4z' fill='%231a1305'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">AdFlow <span>Studio Auto</span></div>
+    <div class="topbar__status" id="health" aria-live="polite"></div>
+    <button type="button" class="btn btn--ghost" id="btn-doctor">Flow Doctor</button>
+  </header>
+
+  <main class="layout">
+    <section class="card" id="create-card">
+      <form id="create-form" autocomplete="off">
+        <label class="question" for="brief">O que você quer criar?</label>
+        <textarea id="brief" name="brief" rows="5" required
+          placeholder="Ex.: Crie um anúncio de 24 segundos desse fone. Quero estilo premium, fundo escuro, câmera cinematográfica, exploded view mostrando componentes internos e final com produto flutuando e logo."></textarea>
+
+        <div class="grid-3">
+          <div class="field">
+            <span class="label">Produto</span>
+            <label class="drop" for="product_files">
+              <input type="file" id="product_files" name="product_files" accept="image/*" multiple required>
+              <span class="drop__text">Adicionar fotos<small>frente, lateral, 3/4, detalhes</small></span>
+            </label>
+            <div class="thumbs" id="product-thumbs"></div>
+            <input type="text" id="product_name" name="product_name" placeholder="Nome do produto (opcional)">
+          </div>
+          <div class="field">
+            <span class="label">Referência <em>opcional</em></span>
+            <label class="drop" for="reference">
+              <input type="file" id="reference" name="reference" accept="image/*,video/*">
+              <span class="drop__text">Vídeo ou imagem<small>usada como linguagem visual</small></span>
+            </label>
+            <div class="thumbs" id="reference-thumbs"></div>
+          </div>
+          <div class="field">
+            <span class="label">Logo <em>opcional</em></span>
+            <label class="drop" for="logo">
+              <input type="file" id="logo" name="logo" accept="image/png,image/webp,image/jpeg">
+              <span class="drop__text">PNG com fundo transparente<small>aplicado na pós-produção</small></span>
+            </label>
+            <div class="thumbs" id="logo-thumbs"></div>
+          </div>
+        </div>
+
+        <div class="field">
+          <span class="label">Duração</span>
+          <div class="chips" id="durations" role="radiogroup" aria-label="Duração"></div>
+          <input type="number" id="custom-duration" min="2" max="300" step="0.5" placeholder="segundos" hidden>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <span class="label">Formato</span>
+            <div class="chips" id="aspects" role="radiogroup" aria-label="Formato"></div>
+          </div>
+          <div class="field">
+            <span class="label">Qualidade</span>
+            <div class="chips" id="qualities" role="radiogroup" aria-label="Qualidade"></div>
+          </div>
+        </div>
+
+        <details class="more">
+          <summary>Mais opções</summary>
+          <div class="grid-3">
+            <div class="field">
+              <label class="label" for="cta">Texto final (CTA)</label>
+              <input type="text" id="cta" name="cta" placeholder="Ex.: Compre agora">
+            </div>
+            <div class="field">
+              <label class="label" for="music">Música</label>
+              <input type="file" id="music" name="music" accept="audio/*">
+            </div>
+            <div class="field">
+              <label class="label" for="max_credits">Teto de créditos</label>
+              <input type="number" id="max_credits" name="max_credits" min="1" step="1" placeholder="automático">
+            </div>
+          </div>
+        </details>
+
+        <div class="field">
+          <span class="label">Motor de geração</span>
+          <div class="chips" id="engines" role="radiogroup" aria-label="Motor"></div>
+        </div>
+
+        <div class="estimate" id="estimate" aria-live="polite"></div>
+
+        <button type="submit" class="btn btn--primary btn--big" id="btn-create">Criar vídeo automaticamente</button>
+        <p class="form-error" id="form-error" role="alert"></p>
+      </form>
+    </section>
+
+    <section class="card" id="progress-card" hidden>
+      <div class="progress__head">
+        <h2 id="progress-title">Criando seu anúncio</h2>
+        <button type="button" class="btn btn--ghost" id="btn-new">Novo anúncio</button>
+      </div>
+      <div class="metrics" id="metrics"></div>
+      <ol class="stages" id="stages"></ol>
+      <div class="alerts" id="alerts"></div>
+      <div class="actions" id="actions"></div>
+      <div class="result" id="result"></div>
+      <details class="more">
+        <summary>Log do projeto</summary>
+        <pre class="log" id="log"></pre>
+      </details>
+    </section>
+
+    <section class="card">
+      <h2 class="small-title">Projetos recentes</h2>
+      <ul class="projects" id="projects"></ul>
+    </section>
+  </main>
+
+  <dialog id="confirm-dialog">
+    <form method="dialog" class="dialog">
+      <h2>Confirmar geração no Google Flow (real)</h2>
+      <div id="confirm-body"></div>
+      <label class="check"><input type="checkbox" id="confirm-check"> Autorizo o uso de até <strong id="confirm-max"></strong> créditos da minha conta.</label>
+      <div class="dialog__actions">
+        <button value="cancel" class="btn btn--ghost">Cancelar</button>
+        <button value="ok" class="btn btn--primary" id="confirm-ok" disabled>Gerar agora</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="doctor-dialog">
+    <form method="dialog" class="dialog">
+      <h2>Flow Doctor</h2>
+      <p class="muted">Testa a conexão com o Google Flow real sem gerar nada e sem gastar créditos.</p>
+      <div id="doctor-body"></div>
+      <div class="dialog__actions">
+        <button type="button" class="btn btn--ghost" id="doctor-sim">Testar simulador</button>
+        <button type="button" class="btn btn--primary" id="doctor-run">Rodar no Flow real</button>
+        <button value="close" class="btn btn--ghost">Fechar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+{
+  "_nota": "Copie para config/settings.json e ajuste só o que precisar. Campos omitidos usam o padrão.",
+  "port": 8765,
+  "browser_path": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+  "cdp_port": 9333,
+  "flow_url": "https://labs.google/fx/tools/flow",
+  "generation_durations": [8],
+  "outputs_per_prompt": 1,
+  "generation_timeout_s": 900,
+  "doctor_strict": false,
+  "use_last_frame_as_start": true,
+  "square_generation_aspect": "16:9",
+  "fit_mode": "crop",
+  "transition_duration": 0.4,
+  "on_quality_fail": "best_effort",
+  "font_path": null,
+  "ffmpeg": null,
+  "ffprobe": null
+}

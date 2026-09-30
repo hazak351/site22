@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fake Flow (teste)</title>
+  <!--
+    Página FALSA que imita a estrutura geral de uma ferramenta tipo Google Flow, usada só nos
+    testes automatizados do driver Playwright. NÃO representa o DOM real do Google Flow.
+    Parâmetros: ?login=1 (sessão expirada), ?broken=1 (sem campo de prompt),
+    ?fail=1 (erro de geração), ?delay=ms
+  -->
+  <style>
+    body { font-family: sans-serif; background: #111; color: #eee; }
+    .tile { display: inline-block; margin: 8px; position: relative; }
+    video { width: 160px; height: 90px; background: #000; }
+    [role=listbox], #settings-panel, #dl-menu { background: #222; padding: 6px; }
+  </style>
+</head>
+<body>
+  <main id="login" hidden>
+    <h1>Sign in to continue</h1>
+    <button type="button">Sign in</button>
+  </main>
+
+  <main id="home" hidden>
+    <h1>Flow</h1>
+    <button type="button" id="new">New project</button>
+  </main>
+
+  <section id="editor" hidden>
+    <div class="toolbar">
+      <button type="button" role="combobox" aria-label="Mode" id="mode">Text to Video</button>
+      <ul role="listbox" id="mode-list" hidden>
+        <li role="option">Text to Video</li><li role="option">Frames to Video</li><li role="option">Ingredients to Video</li>
+      </ul>
+      <button type="button" aria-label="Settings" id="settings">⚙</button>
+      <div id="settings-panel" hidden>
+        <button type="button" role="combobox" aria-label="Aspect ratio" id="aspect">Landscape (16:9)</button>
+        <button type="button" role="combobox" aria-label="Model" id="model">Veo 3 - Quality</button>
+        <button type="button" role="combobox" aria-label="Outputs per prompt" id="outputs">2</button>
+        <ul role="listbox" id="settings-list" hidden></ul>
+      </div>
+    </div>
+    <div id="results"></div>
+    <div id="error" role="alert"></div>
+    <div class="composer">
+      <button type="button" id="add">Add image</button>
+      <input type="file" id="file" multiple accept="image/*" hidden>
+      <div id="uploads"></div>
+      <textarea id="prompt" aria-label="Prompt" placeholder="Generate a video with text…"></textarea>
+      <button type="button" aria-label="Generate" id="gen">→</button>
+    </div>
+  </section>
+
+  <div id="dl-menu" hidden>
+    <button type="button" role="menuitem" id="dl-original">Original size (720p)</button>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(location.search);
+    const delay = Number(params.get("delay") || 800);
+    window.__adflow_log = { prompts: [], uploads: [], settings: {}, generations: 0 };
+    const show = (id) => { document.getElementById(id).hidden = false; };
+
+    if (params.get("login")) show("login"); else show("home");
+
+    document.getElementById("new").onclick = () => {
+      document.getElementById("home").hidden = true;
+      show("editor");
+      if (params.get("broken")) document.getElementById("prompt").remove();
+      history.pushState(null, "", location.pathname + "?project=abc" + (params.get("fail") ? "&fail=1" : "") + "&delay=" + delay);
+    };
+
+    function openList(button, list, options, key) {
+      list.innerHTML = "";
+      for (const text of options) {
+        const li = document.createElement("li");
+        li.setAttribute("role", "option");
+        li.textContent = text;
+        li.onclick = () => { button.textContent = text; window.__adflow_log.settings[key] = text; list.hidden = true; };
+        list.append(li);
+      }
+      list.hidden = false;
+    }
+    const modeBtn = document.getElementById("mode");
+    const modeList = document.getElementById("mode-list");
+    modeBtn.onclick = () => openList(modeBtn, modeList, ["Text to Video", "Frames to Video", "Ingredients to Video"], "mode");
+    document.getElementById("settings").onclick = () => show("settings-panel");
+    const settingsList = document.getElementById("settings-list");
+    document.getElementById("aspect").onclick = (e) => openList(e.target, settingsList, ["Landscape (16:9)", "Portrait (9:16)"], "aspect");
+    document.getElementById("model").onclick = (e) => openList(e.target, settingsList, ["Veo 3 - Fast", "Veo 3 - Quality"], "model");
+    document.getElementById("outputs").onclick = (e) => openList(e.target, settingsList, ["1", "2", "3", "4"], "outputs");
+
+    const file = document.getElementById("file");
+    document.getElementById("add").onclick = () => file.click();
+    file.onchange = () => {
+      for (const f of file.files) {
+        window.__adflow_log.uploads.push(f.name);
+        const chip = document.createElement("span");
+        chip.textContent = f.name;
+        document.getElementById("uploads").append(chip);
+      }
+    };
+
+    let dlTarget = null;
+    document.getElementById("dl-original").onclick = () => {
+      const a = document.createElement("a");
+      a.href = dlTarget;
+      a.download = "flow_clip.mp4";
+      document.body.append(a);
+      a.click();
+      a.remove();
+      document.getElementById("dl-menu").hidden = true;
+    };
+
+    document.getElementById("gen").onclick = () => {
+      const prompt = document.getElementById("prompt");
+      if (!prompt || !prompt.value.trim()) return;
+      window.__adflow_log.prompts.push(prompt.value);
+      window.__adflow_log.generations += 1;
+      const n = window.__adflow_log.generations;
+      const tile = document.createElement("div");
+      tile.className = "tile";
+      tile.innerHTML = '<div role="progressbar" aria-label="Generating">Generating 0%</div><video muted></video>';
+      document.getElementById("results").prepend(tile);
+      setTimeout(() => {
+        tile.querySelector("[role=progressbar]").remove();
+        if (params.get("fail")) {
+          document.getElementById("error").textContent = "Something went wrong. Please try again.";
+          tile.remove();
+          return;
+        }
+        tile.querySelector("video").src = "clip.mp4?n=" + n;
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.setAttribute("aria-label", "Download");
+        btn.textContent = "⬇";
+        btn.onclick = () => { dlTarget = "clip.mp4?n=" + n; show("dl-menu"); };
+        tile.append(btn);
+      }, delay);
+    };
+  </script>
+</body>
+</html>

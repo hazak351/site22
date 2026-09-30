@@ -1,0 +1,27 @@
+{
+  "_nota": "Tabela de créditos do Google Flow. VALORES DE EXEMPLO: o Google muda preços e modelos. Confira no Flow (menu do modelo / saldo de créditos) e ajuste aqui. Nenhuma geração real acontece sem confirmação do teto de créditos.",
+  "modes": {
+    "economico": {
+      "label": "Econômico",
+      "model_hint": "Veo - Fast (mais barato)",
+      "model_match": "fast|lite|rápido",
+      "credits_per_generation": 10,
+      "max_attempts_per_scene": 1
+    },
+    "equilibrado": {
+      "label": "Equilibrado",
+      "model_hint": "Veo - Fast",
+      "model_match": "fast|rápido",
+      "credits_per_generation": 20,
+      "max_attempts_per_scene": 2
+    },
+    "premium": {
+      "label": "Premium",
+      "model_hint": "Veo - Quality",
+      "model_match": "quality|qualidade",
+      "credits_per_generation": 100,
+      "max_attempts_per_scene": 2
+    }
+  },
+  "default_max_credits_multiplier": 2.0
+}

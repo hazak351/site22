@@ -1,0 +1,5 @@
+* text=auto
+# .bat/.cmd guardados byte a byte com CRLF: o CMD do Windows exige CRLF,
+# e assim o arquivo chega certo por clone, ZIP ou download avulso.
+*.bat -text
+*.cmd -text
